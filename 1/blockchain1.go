@@ -140,7 +140,6 @@ func handleWriteBlock(w http.ResponseWriter, r *http.Request) {
 	//spew.Dump(isBlockValid(newBlock, Blockchain[len(Blockchain)-1]))
 	//respondWidthJSON(w, r, http.StatusCreated, isBlockValid(newBlock, Blockchain[len(Blockchain)-1]))
 
-
 	if isBlockValid(newBlock, Blockchain[len(Blockchain)-1]) {
 		newBlockchain := append(Blockchain, newBlock)
 		replaceChain(newBlockchain)
@@ -156,7 +155,10 @@ func respondWidthJSON(w http.ResponseWriter, r *http.Request, code int, payload 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte("HTTP 500: Internal Server Error"))
-	}
+	}		t := time.Now()
+	genesisBlock := Block{0, t.String(), 0, "", ""}
+	spew.Dump(genesisBlock)
+	Blockchain = append(Blockchain, genesisBlock)
 	w.WriteHeader(code)
 	w.Write(response)
 }
@@ -169,10 +171,7 @@ func main() {
 
 	//初始化区块链
 	go func() {
-		t := time.Now()
-		genesisBlock := Block{0, t.String(), 0, "", ""}
-		spew.Dump(genesisBlock)
-		Blockchain = append(Blockchain, genesisBlock)
+
 	}()
 	log.Fatal(run())
 }
